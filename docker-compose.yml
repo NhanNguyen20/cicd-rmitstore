@@ -1,0 +1,35 @@
+# RMIT University Vietnam
+# Course: COSC2767 Systems Deployment and Operations
+# Semester: 2024C
+# Assessment: Assignment 2
+# Author: TEAM NEWBIE
+# ID:    
+# Nguyen Minh Quan - S3927181
+# Nguyen Nghia Hiep - S3978270
+# Nguyen Le Thu Nhan - S3932151
+# Nguyen Phuoc Nhu Phuc - S3819660
+#
+# Created  date: 3rd Jan 2024
+# Last modified: 16th Jan 2024
+
+services:
+  client:
+    image: ${IMAGE_NAME_PROD}-client:latest
+    ports:
+      - "8080:8080"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == client
+
+
+  server:
+    image: ${IMAGE_NAME_PROD}-server:latest
+    ports:
+      - "3000:3000"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == server

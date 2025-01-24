@@ -1,0 +1,89 @@
+# RMIT University Vietnam
+# Course: COSC2767 Systems Deployment and Operations
+# Semester: 2024C
+# Assessment: Assignment 2
+# Author: TEAM NEWBIE
+# ID:    
+# Nguyen Minh Quan - S3927181
+# Nguyen Nghia Hiep - S3978270
+# Nguyen Le Thu Nhan - S3932151
+# Nguyen Phuoc Nhu Phuc - S3819660
+#
+# Created  date: 3rd Jan 2024
+# Last modified: 16th Jan 2024
+
+---
+- hosts: DevServer
+
+  tasks:
+    - name: Kill all
+      shell: |
+        if [ "$(docker ps -q)" ]; then
+          docker kill $(docker ps -q)
+        else
+          echo "No running containers to kill"
+        fi
+        
+    - name: Remove all containers
+      shell: |
+        if [ "$(docker ps -a -q)" ]; then
+          docker rm $(docker ps -a -q)
+        else
+          echo "No containers to remove"
+        fi
+        
+    - name: Remove all images
+      shell: |
+        if [ "$(docker images -aq)" ]; then
+          docker rmi -f $(docker images -aq)
+        else
+          echo "No images no remove"
+        fi
+
+    - name: Start the Client Docker container
+      command: docker run -d --name fe-container -p 8080:8080 nhan2102/rmit-store-client
+
+    - name: Start the Server Docker container
+      command: docker run -d --name be-container -p 3000:3000 nhan2102/rmit-store-server
+
+    - name: Wait for the client container to be ready
+      shell: |
+        until docker exec fe-container ls /app; do
+          sleep 2
+        done
+
+    - name: Wait for the server container to be ready
+      shell: |
+        until docker exec be-container ls /app; do
+          sleep 2
+        done
+
+    # - name: Run Web UI Test
+    #   shell: | 
+    #     source /.bashrc && fnm use --install-if-missing 22 && npm install && dnf install -y xorg-x11-server-Xvfb gtk3-devel nss alsa-lib && npx cypress run
+    #   args:
+    #     chdir: /home/ansibleadmin/COSC2767-RMIT-Store
+    #   become: yes
+
+    # - name: Run Web UI Test
+    #   shell: | 
+    #     source /.bashrc && npx cypress run
+    #   args:
+    #     chdir: /home/ansibleadmin/COSC2767-RMIT-Store
+    #   become: yes
+    # - name: Copy test output to control machine
+    #   fetch:
+    #     src: /tmp/test_output.txt
+    #     dest: /tmp/jenkins/test_output.txt
+    #     flat: yes
+
+    # - name: Copy test exit code to control machine
+    #   fetch:
+    #     src: /tmp/test_exit_code.txt
+    #     dest: /tmp/jenkins/test_exit_code.txt
+    #     flat: yes
+
+    # - name: Stop and remove the container
+    #   shell: |
+    #     docker stop fe-container
+    #     docker rm fe-container
