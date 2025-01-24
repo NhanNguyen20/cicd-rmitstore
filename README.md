@@ -41,3 +41,7 @@ The **Jenkins** pipeline automates the following stages, ensuring a streamlined 
 
 10. **Monitor Failures**:
    - Integrates **Amazon SNS (Simple Notification Service)** to send email notifications in case of build failures, ensuring prompt attention to issues.
+
+## Application Flow Diagram
+<img width="897" alt="Screenshot 2025-01-25 at 00 45 41" src="https://github.com/user-attachments/assets/304021f9-ee60-4a57-861d-3d8cd7030dd9" />
+
